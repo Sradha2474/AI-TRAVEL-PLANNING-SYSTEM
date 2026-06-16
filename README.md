@@ -4,26 +4,13 @@ A production-style **multi-agent travel planning application** built with **Lang
 
 ---
 
-## Screenshots
+## Application Preview
 
-> Add your application screenshots to `docs/screenshots/` and replace the placeholder paths below.
+![AI Travel Booking System — homepage with hero banner, destination cards, and trip preferences](docs/screenshots/Hero_Page.jpeg)
 
-| Section | Preview |
-|--------|---------|
-| **Homepage & Hero** | ![Homepage hero banner](docs/screenshots/01-hero-header.png) |
-| **Trip Preferences** | ![Trip preferences panel](docs/screenshots/02-trip-preferences.png) |
-| **Agent Pipeline (Live)** | ![Live agent pipeline](docs/screenshots/03-agent-pipeline.png) |
-| **Final Travel Plan** | ![Final travel plan output](docs/screenshots/04-final-plan.png) |
+The Streamlit dashboard opens with a cinematic full-width hero — an airplane above golden clouds — with the **AI Travel Booking System** title centered on the image. The left sidebar shows your session ID, the tech stack (LangGraph, Groq, PostgreSQL, Tavily, AviationStack), and the four-agent pipeline at a glance.
 
-**Suggested screenshot filenames**
-
-```
-docs/screenshots/
-├── 01-hero-header.png       # Full-width header with title overlay
-├── 02-trip-preferences.png  # Domestic/International, travel modes, activities
-├── 03-agent-pipeline.png    # Live agent status + progress bar
-└── 04-final-plan.png        # Tabs, metrics, download plan
-```
+Below the hero, five destination cards (Tokyo, Paris, Bangkok, Rome, Dubai) invite quick exploration. The main panel lets you describe your trip in natural language or tap preset prompts like *“7-day Japan under ₹2L”*. Sliders set **duration** and **budget**, while dropdowns and toggles capture travel style, domestic vs international scope, and preferred region — so every request sent to the agents is rich, structured, and personal.
 
 ---
 
