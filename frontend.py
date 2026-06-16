@@ -397,3 +397,53 @@ with pref_col3:
         ["Balanced", "Luxury", "Budget", "Adventure", "Family", "Romantic"],
         index=0,
     )
+
+scope_col1, scope_col2 = st.columns(2)
+with scope_col1:
+    trip_scope = st.radio(
+        "Trip Section",
+        ["Domestic (Inter-state)", "International"],
+        horizontal=True,
+    )
+with scope_col2:
+    preferred_region = st.selectbox(
+        "Preferred Region",
+        ["North", "South", "East", "West", "North-East", "Global / Any"],
+        index=5,
+    )
+
+interests = st.multiselect(
+    "Interests",
+    ["Food", "Nature", "History", "Shopping", "Nightlife", "Museums", "Local Culture", "Photography"],
+    default=["Food", "Local Culture"],
+)
+
+travel_modes = st.multiselect(
+    "Travel Modes",
+    ["Air", "Road", "Train", "Bus", "Water / Ferry"],
+    default=["Air", "Road"],
+)
+
+activities = st.multiselect(
+    "Adventure & Stay Options",
+    ["Camping", "Trekking", "Road Trip", "Beach Stay", "Wildlife Safari", "City Walks"],
+    default=["Camping", "Trekking"],
+)
+
+enriched_query = f"""{user_query.strip()}
+
+Trip preferences:
+- Duration: {trip_days} days
+- Budget: ₹{budget_lakhs} lakhs
+- Style: {travel_style}
+- Section: {trip_scope}
+- Preferred region: {preferred_region}
+- Travel modes: {", ".join(travel_modes) if travel_modes else "Any"}
+- Adventure/stay options: {", ".join(activities) if activities else "No specific options"}
+- Interests: {", ".join(interests) if interests else "No specific interests"}"""
+
+with st.expander("💡 Smart prompt preview", expanded=False):
+    st.markdown("This enriched prompt is sent to the agent pipeline:")
+    st.code(enriched_query or "Type your trip request to generate a preview.")
+
+generate = st.button("🚀  Generate My Travel Plan", use_container_width=True)
