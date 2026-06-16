@@ -343,3 +343,44 @@ st.markdown("""
     </div>
 </div>
 """, unsafe_allow_html=True)
+
+# ── Destination image strip ───────────────────────────────────────────────────
+DESTINATIONS = [
+    ("🇯🇵 Tokyo",     "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=300&q=70"),
+    ("🇫🇷 Paris",     "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=300&q=70"),
+    ("🇹🇭 Bangkok",   "https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=300&q=70"),
+    ("🇮🇹 Rome",      "https://images.unsplash.com/photo-1552832230-c0197dd311b5?w=300&q=70"),
+    ("🇦🇪 Dubai",     "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=300&q=70"),
+]
+
+cols = st.columns(5)
+for col, (name, img_url) in zip(cols, DESTINATIONS):
+    with col:
+        st.markdown(f"""
+        <div style="border-radius:10px;overflow:hidden;position:relative;height:90px;cursor:pointer;">
+            <img src="{img_url}" style="width:100%;height:100%;object-fit:cover;filter:brightness(0.55);" />
+            <div style="position:absolute;bottom:8px;left:0;right:0;text-align:center;
+                        color:#fff;font-size:0.8rem;font-weight:600;">{name}</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+st.markdown("<br>", unsafe_allow_html=True)
+
+# ── Input ─────────────────────────────────────────────────────────────────────
+st.markdown("<div class='input-label'>🗺️ Describe your trip</div>", unsafe_allow_html=True)
+
+QUICK = ["7-day Japan under ₹2L", "Paris trip for 5 days", "Dubai weekend trip", "Bali backpacking 10 days"]
+qcols = st.columns(len(QUICK))
+quick_fill = ""
+for qc, label in zip(qcols, QUICK):
+    with qc:
+        if st.button(label, key=f"q_{label}"):
+            quick_fill = label
+
+user_query = st.text_area(
+    "Describe your trip",
+    value=quick_fill,
+    placeholder="e.g. Plan a complete 7-day Japan trip including flights, hotels and sightseeing under ₹2 lakhs",
+    height=100,
+    label_visibility="collapsed",
+)
