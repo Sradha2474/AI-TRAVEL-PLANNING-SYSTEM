@@ -138,4 +138,8 @@ graph.add_edge("itinerary_agent", "final_agent")
 graph.add_edge("final_agent", END)
 
 
-app = graph.compile()
+_conn = psycopg.connect(DATABASE_URL)
+checkpointer = PostgresSaver(_conn)
+checkpointer.setup()
+
+app = graph.compile(checkpointer=checkpointer)
