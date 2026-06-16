@@ -1,0 +1,32 @@
+# Environment and secrets
+.env
+.env.local
+
+# Virtual environment
+langgraph_env3/
+venv/
+.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+
+# Generated travel plans (optional local output)
+travel_plans/*.md
+!travel_plans/.gitkeep
+
+# IDE and OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Backup and staging
+*.bak
+.commit-staging/
