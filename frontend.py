@@ -447,3 +447,58 @@ with st.expander("💡 Smart prompt preview", expanded=False):
     st.code(enriched_query or "Type your trip request to generate a preview.")
 
 generate = st.button("🚀  Generate My Travel Plan", use_container_width=True)
+
+# ── Agent pipeline ────────────────────────────────────────────────────────────
+AGENT_META = {
+    "flight_agent":    ("✈️", "Flight Agent"),
+    "hotel_agent":     ("🏨", "Hotel Agent"),
+    "itinerary_agent": ("🗓️", "Itinerary Agent"),
+    "final_agent":     ("🧠", "Final Agent"),
+}
+
+
+if generate:
+    if not user_query.strip():
+        st.warning("Please describe your trip first.")
+    else:
+        config = {"configurable": {"thread_id": thread_id}}
+        collected = {"flight_results": "", "hotel_results": "",
+                     "itinerary": "", "final_response": "", "llm_calls": 0}
+
+        st.markdown("---")
+        st.markdown("<div class='sec-head'><span>🤖 Agent Pipeline — Live</span></div>",
+                    unsafe_allow_html=True)
+
+        for chunk in app.stream(
+            {
+                "messages": [HumanMessage(content=enriched_query)],
+                "user_query": enriched_query,
+                "flight_results": "",
+                "hotel_results": "",
+                "itinerary": "",
+                "llm_calls": 0,
+            },
+            config=config,
+            stream_mode="updates",
+        ):
+            for node_name, state_update in chunk.items():
+                icon, label = AGENT_META.get(node_name, ("🔧", node_name))
+                with st.status(f"{icon}  {label}", state="complete", expanded=True):
+                    if node_name == "flight_agent":
+                        text = state_update.get("flight_results", "")
+                        collected["flight_results"] = text
+                        st.markdown(text or "_No flight data returned._")
+                    elif node_name == "hotel_agent":
+                        text = state_update.get("hotel_results", "")
+                        collected["hotel_results"] = text
+                        st.markdown(text or "_No hotel data returned._")
+                    elif node_name == "itinerary_agent":
+                        text = state_update.get("itinerary", "")
+                        collected["itinerary"] = text
+                        st.markdown(text or "_No itinerary generated._")
+                    elif node_name == "final_agent":
+                        msgs = state_update.get("messages", [])
+                        text = msgs[-1].content if msgs else ""
+                        collected["final_response"] = text
+                        st.markdown(text or "_No final response._")
+                    collected["llm_calls"] = state_update.get("llm_calls", collected["llm_calls"])
