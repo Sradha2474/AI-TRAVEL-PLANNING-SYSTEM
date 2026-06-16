@@ -456,7 +456,6 @@ AGENT_META = {
     "final_agent":     ("🧠", "Final Agent"),
 }
 
-
 if generate:
     if not user_query.strip():
         st.warning("Please describe your trip first.")
@@ -464,6 +463,8 @@ if generate:
         config = {"configurable": {"thread_id": thread_id}}
         collected = {"flight_results": "", "hotel_results": "",
                      "itinerary": "", "final_response": "", "llm_calls": 0}
+        pipeline_progress = st.progress(0, text="Starting multi-agent pipeline...")
+        completed_steps = 0
 
         st.markdown("---")
         st.markdown("<div class='sec-head'><span>🤖 Agent Pipeline — Live</span></div>",
@@ -483,22 +484,103 @@ if generate:
         ):
             for node_name, state_update in chunk.items():
                 icon, label = AGENT_META.get(node_name, ("🔧", node_name))
+
                 with st.status(f"{icon}  {label}", state="complete", expanded=True):
                     if node_name == "flight_agent":
                         text = state_update.get("flight_results", "")
                         collected["flight_results"] = text
                         st.markdown(text or "_No flight data returned._")
+
                     elif node_name == "hotel_agent":
                         text = state_update.get("hotel_results", "")
                         collected["hotel_results"] = text
                         st.markdown(text or "_No hotel data returned._")
+
                     elif node_name == "itinerary_agent":
                         text = state_update.get("itinerary", "")
                         collected["itinerary"] = text
                         st.markdown(text or "_No itinerary generated._")
+
                     elif node_name == "final_agent":
                         msgs = state_update.get("messages", [])
                         text = msgs[-1].content if msgs else ""
                         collected["final_response"] = text
                         st.markdown(text or "_No final response._")
+
                     collected["llm_calls"] = state_update.get("llm_calls", collected["llm_calls"])
+                completed_steps += 1
+                progress_value = min(completed_steps / 4, 1.0)
+                pipeline_progress.progress(progress_value, text=f"Completed: {label}")
+        pipeline_progress.progress(1.0, text="Pipeline complete ✅")
+
+        # Metrics
+        st.markdown(f"""
+        <div class="metric-row">
+            <div class="metric-box"><div class="metric-val">4</div><div class="metric-lbl">Agents Run</div></div>
+            <div class="metric-box"><div class="metric-val">{collected['llm_calls']}</div><div class="metric-lbl">LLM Calls</div></div>
+            <div class="metric-box"><div class="metric-val">✅</div><div class="metric-lbl">Status</div></div>
+        </div>
+        """, unsafe_allow_html=True)
+
+        # Final plan card
+        if collected["final_response"]:
+            st.markdown("<div class='sec-head'><span>🧠 Final Travel Plan</span></div>",
+                        unsafe_allow_html=True)
+            st.markdown(f"<div class='final-card'>{collected['final_response']}</div>",
+                        unsafe_allow_html=True)
+
+        # Save
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"travel_plan_{timestamp}.md"
+        save_dir = os.path.join(os.path.dirname(__file__), "travel_plans")
+        os.makedirs(save_dir, exist_ok=True)
+
+        file_content = f"""# Travel Plan
+**Query:** {user_query}
+**Generated:** {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+**User ID:** {thread_id}
+
+---
+
+## ✈️ Flight Information
+{collected['flight_results'] or 'N/A'}
+
+---
+
+## 🏨 Hotel Information
+{collected['hotel_results'] or 'N/A'}
+
+---
+
+## 🗓️ Itinerary
+{collected['itinerary'] or 'N/A'}
+
+---
+
+## 🧠 Final Travel Plan
+{collected['final_response'] or 'N/A'}
+
+---
+*LLM Calls: {collected['llm_calls']}*
+"""
+        with open(os.path.join(save_dir, filename), "w", encoding="utf-8") as f:
+            f.write(file_content)
+
+        dl_col, info_col = st.columns([1, 3])
+        with dl_col:
+            st.download_button("⬇️ Download Plan", data=file_content,
+                               file_name=filename, mime="text/markdown",
+                               use_container_width=True)
+        with info_col:
+            st.markdown(f"<div class='save-bar'>📁 Auto-saved → <code>travel_plans/{filename}</code></div>",
+                        unsafe_allow_html=True)
+
+st.markdown("<div class='sec-head'><span>🕘 Recent Plans</span></div>", unsafe_allow_html=True)
+if st.session_state["plan_history"]:
+    for item in st.session_state["plan_history"]:
+        st.markdown(
+            f"<div class='save-bar'>🧳 <b>{item['time']}</b> · <code>{item['thread_id']}</code><br>{item['query']}</div>",
+            unsafe_allow_html=True,
+        )
+else:
+    st.info("No plans yet. Generate your first trip to see history here.")
