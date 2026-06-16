@@ -529,6 +529,24 @@ if generate:
             st.markdown(f"<div class='final-card'>{collected['final_response']}</div>",
                         unsafe_allow_html=True)
 
+        st.markdown("<div class='sec-head'><span>🧩 Trip Breakdown</span></div>", unsafe_allow_html=True)
+        tab1, tab2, tab3, tab4 = st.tabs(["Flights", "Hotels", "Itinerary", "Final Plan"])
+        with tab1:
+            st.markdown(collected["flight_results"] or "_No flight data returned._")
+        with tab2:
+            st.markdown(collected["hotel_results"] or "_No hotel data returned._")
+        with tab3:
+            st.markdown(collected["itinerary"] or "_No itinerary generated._")
+        with tab4:
+            st.markdown(collected["final_response"] or "_No final response._")
+
+        st.session_state["plan_history"].insert(0, {
+            "time": datetime.now().strftime("%d %b %Y, %I:%M %p"),
+            "query": user_query.strip(),
+            "thread_id": thread_id,
+        })
+        st.session_state["plan_history"] = st.session_state["plan_history"][:8]
+
         # Save
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = f"travel_plan_{timestamp}.md"
