@@ -2,17 +2,13 @@
 
 A production-style **multi-agent travel planning application** built with **LangGraph**. Four specialized AI agents collaborate to search flights, find hotels, build itineraries, and deliver a complete trip plan — with persistent conversation memory backed by PostgreSQL.
 
----
-
 ## Application Preview
 
-![AI Travel Booking System — homepage with hero banner, destination cards, and trip preferences](docs/screenshots/Hero_Page.jpeg)
+![AI Travel Booking System homepage with hero banner, destination cards, and trip preferences](docs/screenshots/Hero_Page.jpeg)
 
-The Streamlit dashboard opens with a cinematic full-width hero — an airplane above golden clouds — with the **AI Travel Booking System** title centered on the image. The left sidebar shows your session ID, the tech stack (LangGraph, Groq, PostgreSQL, Tavily, AviationStack), and the four-agent pipeline at a glance.
+The Streamlit dashboard opens with a cinematic full-width hero showing an airplane above golden clouds, with the **AI Travel Booking System** title centered on the image. The left sidebar shows your session ID, the tech stack (LangGraph, Groq, PostgreSQL, Tavily, AviationStack), and the four-agent pipeline at a glance.
 
-Below the hero, five destination cards (Tokyo, Paris, Bangkok, Rome, Dubai) invite quick exploration. The main panel lets you describe your trip in natural language or tap preset prompts like *“7-day Japan under ₹2L”*. Sliders set **duration** and **budget**, while dropdowns and toggles capture travel style, domestic vs international scope, and preferred region — so every request sent to the agents is rich, structured, and personal.
-
----
+Below the hero, five destination cards (Tokyo, Paris, Bangkok, Rome, Dubai) invite quick exploration. The main panel lets you describe your trip in natural language or tap preset prompts like *"7-day Japan under ₹2L"*. Sliders set **duration** and **budget**, while dropdowns and toggles capture travel style, domestic vs international scope, and preferred region, so every request sent to the agents is rich, structured, and personal.
 
 ## Features
 
