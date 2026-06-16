@@ -384,3 +384,16 @@ user_query = st.text_area(
     height=100,
     label_visibility="collapsed",
 )
+
+st.markdown("<div class='sec-head'><span>🎛️ Trip Preferences</span></div>", unsafe_allow_html=True)
+pref_col1, pref_col2, pref_col3 = st.columns(3)
+with pref_col1:
+    trip_days = st.slider("Trip Duration (days)", min_value=2, max_value=21, value=7)
+with pref_col2:
+    budget_lakhs = st.slider("Budget (₹ Lakhs)", min_value=1, max_value=25, value=2)
+with pref_col3:
+    travel_style = st.selectbox(
+        "Travel Style",
+        ["Balanced", "Luxury", "Budget", "Adventure", "Family", "Romantic"],
+        index=0,
+    )
